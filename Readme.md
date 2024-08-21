@@ -452,6 +452,124 @@ tt 	AM/PM 	ب.ظ یا ق.ظ
 t 	First letter of AM/PM 	اولین حرف از ب.ظ یا ق.ظ 
 ```
 
+### صدا زدن توابع با استفاده از رشته نام
+
+حالت اول: در یک کلاس:
+
+``` csharp
+
+public class MyClass
+{
+    public void SayHello()
+    {
+        Console.WriteLine("Hello!");
+    }
+
+    public void Greet(string name)
+    {
+        Console.WriteLine($"Hello, {name}!");
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        MyClass myClassInstance = new MyClass();
+
+        string methodName = "SayHello";
+        CallMethodByName(myClassInstance, methodName);
+
+        string methodNameWithParams = "Greet";
+        object[] parameters = new object[] { "Alice" };
+        CallMethodByName(myClassInstance, methodNameWithParams, parameters);
+    }
+
+    public static void CallMethodByName(object obj, string methodName, params object[] parameters)
+    {
+        Type type = obj.GetType();
+        MethodInfo methodInfo = type.GetMethod(methodName);
+
+        if (methodInfo != null)
+            methodInfo.Invoke(obj, parameters);
+        else
+        {
+            Console.WriteLine($"Method '{methodName}' not found in class '{type.Name}'.");
+        }
+    }
+}
+
+```
+
+حال دوم: در کلاس های ثابت و توابع ثابت:
+
+``` csharp
+public static class MyStaticClass
+{
+    public static void PrintMessage()
+    {
+        Console.WriteLine("Hello from a static method!");
+    }
+
+    public static int Add(int a, int b)
+    {
+        return a + b;
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CallStaticMethodByName("MyStaticClass", "PrintMessage");
+
+        object[] parameters = new object[] { 3, 5 };
+        object result = CallStaticMethodByName("MyStaticClass", "Add", parameters);
+        Console.WriteLine($"The result of addition is: {result}");
+    }
+
+    public static object CallStaticMethodByName(string className, string methodName, params object[] parameters)
+    {
+        Type type = Type.GetType(className);
+        
+        if (type == null)
+        {
+            Console.WriteLine($"Class '{className}' not found.");
+            return null;
+        }
+
+        MethodInfo methodInfo = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public);
+
+        if (methodInfo == null)
+        {
+            Console.WriteLine($"Method '{methodName}' not found in class '{className}'.");
+            return null;
+        }
+
+        return methodInfo.Invoke(null, parameters);
+    }
+}
+```
+
+### Cantor - ساخت عدد منحصر به فرد از دو عدد متفاوت
+
+``` csharp
+public BigInteger CantorPairingFunction(BigInteger k1, BigInteger k2)
+{
+    return (k1 + k2) * (k1 + k2 + 1) / 2 + k2;
+}
+public long CantorPairingFunction(long k1, long k2)
+{
+    return (long)(0.5 * (k1 + k2) * (k1 + k2 + 1) + k2);
+}
+public void InverseCantorPairingFunction(long input, out long k1, out longk2)
+{
+    long w = (long)Math.Floor((Math.Sqrt(8 * input + 1) - 1) / 2);
+    long t = w * (w + 1) / 2;
+    k2 = input - t;
+    k1 = w - k2;
+}
+```
 
 # نکته ها
 
